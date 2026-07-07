@@ -3,6 +3,107 @@ const pool = require("../db");
 
 const router = express.Router();
 
+// Week4
+router.get("/:id/openhouses", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({
+        error: "Invalid listing ID",
+      });
+    }
+
+
+    const [rows] = await pool.query(
+      `
+      SELECT
+        L_ListingID,
+        OpenHouseDate,
+        OH_StartTime,
+        OH_EndTime,
+        OH_StartDate,
+        OH_EndDate,
+        all_data
+      FROM rets_openhouse
+      WHERE L_ListingID = ?
+      ORDER BY OpenHouseDate ASC
+      `,
+      [id]
+    );
+
+
+    res.json(rows);
+
+
+  } catch (err) {
+
+    console.error(
+      "Failed to fetch open houses:",
+      err.message
+    );
+
+    res.status(500).json({
+      error: "Failed to fetch open houses",
+      message: err.message,
+    });
+
+  }
+});
+
+
+// Week4
+router.get("/:id", async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({
+        error: "Invalid listing ID",
+      });
+    }
+
+
+    const [rows] = await pool.query(
+      `
+      SELECT *
+      FROM rets_property
+      WHERE L_ListingID = ?
+      `,
+      [id]
+    );
+
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        error: "Property not found",
+      });
+    }
+
+
+    res.json(rows[0]);
+
+
+  } catch(err){
+
+    console.error(
+      "Failed to fetch property:",
+      err.message
+    );
+
+
+    res.status(500).json({
+      error:"Failed to fetch property",
+      message:err.message
+    });
+
+  }
+});
+
+// Week3
 router.get("/", async (req, res) => {
   try {
     const {

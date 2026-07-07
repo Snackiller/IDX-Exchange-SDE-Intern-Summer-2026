@@ -4,11 +4,14 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
 const propertiesRouter = require("./routes/properties");
+const logger = require("./middleware/logger");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(logger);
+
 app.use("/api/properties", propertiesRouter);
 
 app.get("/api/health", async (req, res) => {
