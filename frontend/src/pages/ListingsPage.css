@@ -1,0 +1,30 @@
+.listings-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+  
+  .listings-page__header {
+    margin-bottom: 24px;
+  }
+  
+  .listings-page__header h1 {
+    margin-bottom: 8px;
+  }
+  
+  .listings-page__error {
+    padding: 16px;
+    border: 1px solid #cc0000;
+    border-radius: 8px;
+    background: #fff0f0;
+    color: #990000;
+  }
+  
+  .property-grid {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(280px, 1fr)
+    );
+    gap: 24px;
+  }
