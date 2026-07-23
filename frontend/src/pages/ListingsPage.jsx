@@ -1,64 +1,68 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchProperties } from "../api/client";
 import PropertyCard from "../components/PropertyCard";
+import PropertyFilters from "../components/PropertyFilters";
 import "./ListingsPage.css";
 
 function ListingsPage() {
   const [properties, setProperties] = useState([]);
   const [total, setTotal] = useState(0);
+  const [activeFilters, setActiveFilters] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    let cancelled = false;
+  // Prevent older requests from overwriting newer results.
+  const requestIdRef = useRef(0);
 
-    async function loadProperties() {
-      try {
-        setLoading(true);
-        setError("");
+  const loadProperties = useCallback(async (filters = {}) => {
+    const requestId = ++requestIdRef.current;
 
-        const data = await fetchProperties({
-          limit: 20,
-          offset: 0,
-        });
+    try {
+      setLoading(true);
+      setError("");
 
-        if (!cancelled) {
-          setProperties(data.results || []);
-          setTotal(data.total || 0);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err.message || "Failed to load properties.");
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+      const data = await fetchProperties({
+        ...filters,
+        limit: 20,
+        offset: 0,
+      });
+
+      // Ignore an outdated response.
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+
+      setProperties(data.results || []);
+      setTotal(Number(data.total) || 0);
+    } catch (err) {
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+
+      setProperties([]);
+      setTotal(0);
+      setError(
+        err.message || "Failed to load properties."
+      );
+    } finally {
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
       }
     }
-
-    loadProperties();
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
-  if (loading) {
-    return (
-      <main className="listings-page">
-        <p>Loading properties...</p>
-      </main>
-    );
+  useEffect(() => {
+    loadProperties({});
+  }, [loadProperties]);
+
+  function handleSearch(filters) {
+    setActiveFilters(filters);
+    loadProperties(filters);
   }
 
-  if (error) {
-    return (
-      <main className="listings-page">
-        <h1>Property Listings</h1>
-        <p className="listings-page__error">{error}</p>
-      </main>
-    );
+  function handleClear() {
+    setActiveFilters({});
+    loadProperties({});
   }
 
   return (
@@ -66,24 +70,49 @@ function ListingsPage() {
       <header className="listings-page__header">
         <h1>Property Listings</h1>
 
-        <p>
-          Showing {properties.length} of{" "}
-          {Number(total).toLocaleString()} properties
-        </p>
+        {!loading && !error && (
+          <p>
+            Showing {properties.length} of{" "}
+            {total.toLocaleString()} properties
+          </p>
+        )}
       </header>
 
-      {properties.length === 0 ? (
-        <p>No properties found.</p>
-      ) : (
-        <section className="property-grid">
-          {properties.map((property) => (
-            <PropertyCard
-              key={property.L_ListingID}
-              property={property}
-            />
-          ))}
-        </section>
+      <PropertyFilters
+        onSearch={handleSearch}
+        onClear={handleClear}
+        disabled={loading}
+      />
+
+      {loading && <p>Loading properties...</p>}
+
+      {!loading && error && (
+        <p className="listings-page__error">
+          {error}
+        </p>
       )}
+
+      {!loading &&
+        !error &&
+        properties.length === 0 && (
+          <p className="listings-page__empty">
+            No properties found. Try changing or clearing
+            your filters.
+          </p>
+        )}
+
+      {!loading &&
+        !error &&
+        properties.length > 0 && (
+          <section className="property-grid">
+            {properties.map((property) => (
+              <PropertyCard
+                key={property.L_ListingID}
+                property={property}
+              />
+            ))}
+          </section>
+        )}
     </main>
   );
 }
