@@ -1,7 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { fetchProperties } from "../api/client";
+import Pagination from "../components/Pagination";
 import PropertyCard from "../components/PropertyCard";
 import PropertyFilters from "../components/PropertyFilters";
+
 import "./ListingsPage.css";
 
 function ListingsPage() {
@@ -10,69 +18,94 @@ function ListingsPage() {
   const [activeFilters, setActiveFilters] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Prevent older requests from overwriting newer results.
+  const itemsPerPage = 20;
+
+  // Prevent an older request from overwriting newer results.
   const requestIdRef = useRef(0);
 
-  const loadProperties = useCallback(async (filters = {}) => {
-    const requestId = ++requestIdRef.current;
+  const loadProperties = useCallback(
+    async (filters, page) => {
+      const requestId = ++requestIdRef.current;
 
-    try {
-      setLoading(true);
-      setError("");
+      try {
+        setLoading(true);
+        setError("");
 
-      const data = await fetchProperties({
-        ...filters,
-        limit: 20,
-        offset: 0,
-      });
+        const data = await fetchProperties({
+          ...filters,
+          limit: itemsPerPage,
+          offset: (page - 1) * itemsPerPage,
+        });
 
-      // Ignore an outdated response.
-      if (requestId !== requestIdRef.current) {
-        return;
+        // Ignore an outdated response.
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
+
+        setProperties(data.results || []);
+        setTotal(Number(data.total) || 0);
+      } catch (err) {
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
+
+        setProperties([]);
+        setTotal(0);
+        setError(
+          err.message || "Failed to load properties."
+        );
+      } finally {
+        if (requestId === requestIdRef.current) {
+          setLoading(false);
+        }
       }
-
-      setProperties(data.results || []);
-      setTotal(Number(data.total) || 0);
-    } catch (err) {
-      if (requestId !== requestIdRef.current) {
-        return;
-      }
-
-      setProperties([]);
-      setTotal(0);
-      setError(
-        err.message || "Failed to load properties."
-      );
-    } finally {
-      if (requestId === requestIdRef.current) {
-        setLoading(false);
-      }
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
-    loadProperties({});
-  }, [loadProperties]);
+    loadProperties(activeFilters, currentPage);
+  }, [activeFilters, currentPage, loadProperties]);
 
   function handleSearch(filters) {
     setActiveFilters(filters);
-    loadProperties(filters);
+    setCurrentPage(1);
   }
 
   function handleClear() {
     setActiveFilters({});
-    loadProperties({});
+    setCurrentPage(1);
   }
+
+  function handlePageChange(page) {
+    setCurrentPage(page);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  const start =
+    total === 0
+      ? 0
+      : (currentPage - 1) * itemsPerPage + 1;
+
+  const end = Math.min(
+    currentPage * itemsPerPage,
+    total
+  );
 
   return (
     <main className="listings-page">
       <header className="listings-page__header">
         <h1>Property Listings</h1>
 
-        {!loading && !error && (
+        {!loading && !error && total > 0 && (
           <p>
-            Showing {properties.length} of{" "}
+            Showing {start}-{end} of{" "}
             {total.toLocaleString()} properties
           </p>
         )}
@@ -104,14 +137,25 @@ function ListingsPage() {
       {!loading &&
         !error &&
         properties.length > 0 && (
-          <section className="property-grid">
-            {properties.map((property) => (
-              <PropertyCard
-                key={property.L_ListingID}
-                property={property}
+          <>
+            <section className="property-grid">
+              {properties.map((property) => (
+                <PropertyCard
+                  key={property.L_ListingID}
+                  property={property}
+                />
+              ))}
+            </section>
+
+            {total > itemsPerPage && (
+              <Pagination
+                currentPage={currentPage}
+                totalItems={total}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
               />
-            ))}
-          </section>
+            )}
+          </>
         )}
     </main>
   );
