@@ -1,0 +1,121 @@
+.property-detail-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+  }
+  
+  .back-button {
+    margin-bottom: 24px;
+    padding: 10px 16px;
+  
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+  
+    background: white;
+  
+    cursor: pointer;
+  }
+  
+  .property-detail-page__header {
+    margin-bottom: 24px;
+  }
+  
+  .property-detail-page__header h1 {
+    margin-bottom: 8px;
+    font-size: 36px;
+  }
+  
+  .property-detail-page__header h2 {
+    margin-bottom: 6px;
+    font-size: 24px;
+  }
+  
+  .property-detail-page__stats {
+    display: grid;
+  
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(140px, 1fr)
+      );
+  
+    gap: 16px;
+  
+    padding: 20px 0;
+  
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+  }
+  
+  .property-detail-page__stats div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .property-detail-page__stats strong {
+    font-size: 22px;
+  }
+  
+  .property-detail-page__stats span {
+    color: #666666;
+  }
+  
+  .property-detail-section {
+    margin-top: 36px;
+  }
+  
+  .property-detail-section p {
+    line-height: 1.7;
+  }
+  
+  .property-details-grid {
+    display: grid;
+  
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(220px, 1fr)
+      );
+  
+    gap: 18px;
+  }
+  
+  .property-details-grid div {
+    display: flex;
+    flex-direction: column;
+  
+    padding: 14px;
+  
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+  }
+  
+  .property-details-grid span {
+    margin-top: 5px;
+    color: #555555;
+  }
+  
+  .open-house-list {
+    display: grid;
+    gap: 16px;
+  }
+  
+  .open-house-card {
+    padding: 18px;
+  
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+  
+    background: white;
+  }
+  
+  .property-detail-page__error {
+    padding: 16px;
+  
+    border: 1px solid #cc0000;
+    border-radius: 8px;
+  
+    background: #fff0f0;
+  
+    color: #990000;
+  }

@@ -1,5 +1,4 @@
 export async function fetchProperties(params = {}) {
-  // Only include non-empty query parameters.
   const cleanedParams = Object.fromEntries(
     Object.entries(params).filter(
       ([, value]) =>
@@ -9,7 +8,8 @@ export async function fetchProperties(params = {}) {
     )
   );
 
-  const queryString = new URLSearchParams(cleanedParams).toString();
+  const queryString =
+    new URLSearchParams(cleanedParams).toString();
 
   const url = queryString
     ? `/api/properties?${queryString}`
@@ -22,12 +22,67 @@ export async function fetchProperties(params = {}) {
 
     try {
       const errorData = await response.json();
+
       message =
         errorData.error ||
         errorData.message ||
         message;
     } catch {
-      // Use the default message when the response body is not JSON.
+      // Keep default message.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json();
+}
+
+
+// Fetch one property by listing ID.
+export async function fetchPropertyDetail(id) {
+  const response = await fetch(
+    `/api/properties/${id}`
+  );
+
+  if (!response.ok) {
+    let message = "Failed to fetch property";
+
+    try {
+      const errorData = await response.json();
+
+      message =
+        errorData.error ||
+        errorData.message ||
+        message;
+    } catch {
+      // Keep default message.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json();
+}
+
+
+// Fetch open houses for one property.
+export async function fetchOpenHouses(id) {
+  const response = await fetch(
+    `/api/properties/${id}/openhouses`
+  );
+
+  if (!response.ok) {
+    let message = "Failed to fetch open houses";
+
+    try {
+      const errorData = await response.json();
+
+      message =
+        errorData.error ||
+        errorData.message ||
+        message;
+    } catch {
+      // Keep default message.
     }
 
     throw new Error(message);

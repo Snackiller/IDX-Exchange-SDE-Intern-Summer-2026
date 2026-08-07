@@ -1,0 +1,18 @@
+.property-map {
+    margin-top: 36px;
+  }
+  
+  .property-map iframe {
+    border: 0;
+    border-radius: 12px;
+  }
+  
+  .property-map__directions {
+    display: inline-block;
+    margin-top: 12px;
+  }
+  
+  .property-map__error {
+    margin-top: 24px;
+    color: #666666;
+  }
