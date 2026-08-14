@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const naturalSearchRouter = require("./routes/naturalSearch");
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
@@ -13,6 +14,11 @@ app.use(express.json());
 app.use(logger);
 
 app.use("/api/properties", propertiesRouter);
+
+app.use(
+  "/api/search/natural",
+  naturalSearchRouter
+);
 
 app.get("/api/health", async (req, res) => {
   try {

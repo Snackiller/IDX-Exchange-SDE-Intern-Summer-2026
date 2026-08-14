@@ -9,6 +9,7 @@ import { fetchProperties } from "../api/client";
 import Pagination from "../components/Pagination";
 import PropertyCard from "../components/PropertyCard";
 import PropertyFilters from "../components/PropertyFilters";
+import { Link } from "react-router-dom";
 
 import "./ListingsPage.css";
 
@@ -101,14 +102,23 @@ function ListingsPage() {
   return (
     <main className="listings-page">
       <header className="listings-page__header">
-        <h1>Property Listings</h1>
+        <div>
+          <h1>Property Listings</h1>
 
-        {!loading && !error && total > 0 && (
-          <p>
-            Showing {start}-{end} of{" "}
-            {total.toLocaleString()} properties
-          </p>
-        )}
+          {!loading && !error && total > 0 && (
+            <p>
+              Showing {start}-{end} of{" "}
+              {total.toLocaleString()} properties
+            </p>
+          )}
+        </div>
+
+        <Link
+          to="/search/natural"
+          className="natural-search-link"
+        >
+          Try Natural Language Search
+        </Link>
       </header>
 
       <PropertyFilters

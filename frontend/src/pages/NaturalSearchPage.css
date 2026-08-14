@@ -1,0 +1,115 @@
+.natural-search-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  
+  .natural-search-page__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  
+  .natural-search-page__header h1 {
+    margin-bottom: 8px;
+  }
+  
+  .natural-search-page__header p {
+    margin: 0;
+    color: #666666;
+  }
+  
+  .natural-search-page__link {
+    white-space: nowrap;
+  }
+  
+  .natural-search-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .natural-search-form input {
+    flex: 1;
+  
+    padding: 14px 16px;
+  
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+  
+    font-size: 16px;
+  }
+  
+  .natural-search-form button {
+    padding: 14px 24px;
+  
+    border: none;
+    border-radius: 8px;
+  
+    cursor: pointer;
+  }
+  
+  .natural-search-form button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .interpreted-filters {
+    margin-bottom: 24px;
+  
+    padding: 18px;
+  
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+  
+    background: white;
+  }
+  
+  .interpreted-filters h2 {
+    margin-top: 0;
+    font-size: 18px;
+  }
+  
+  .interpreted-filters__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .interpreted-filter {
+    padding: 6px 10px;
+  
+    border-radius: 20px;
+  
+    background: #eeeeee;
+  
+    font-size: 14px;
+  }
+  
+  .natural-search-page__error {
+    padding: 14px;
+  
+    border: 1px solid #cc0000;
+    border-radius: 8px;
+  
+    background: #fff0f0;
+  
+    color: #990000;
+  }
+  
+  .natural-search-page__message {
+    margin: 24px 0;
+    color: #555555;
+  }
+  
+  @media (max-width: 700px) {
+    .natural-search-page__header {
+      flex-direction: column;
+    }
+  
+    .natural-search-form {
+      flex-direction: column;
+    }
+  }

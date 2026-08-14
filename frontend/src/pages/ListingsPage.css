@@ -28,3 +28,24 @@
     );
     gap: 24px;
   }
+
+  .listings-page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .natural-search-link {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    background: #222;
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .natural-search-link:hover {
+    opacity: 0.85;
+  }

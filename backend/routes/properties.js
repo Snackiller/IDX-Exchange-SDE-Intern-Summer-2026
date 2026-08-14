@@ -113,6 +113,8 @@ router.get("/", async (req, res) => {
       maxPrice,
       beds,
       baths,
+      minYearBuilt,
+      maxYearBuilt,
     } = req.query;
 
     let limit = req.query.limit ? Number(req.query.limit) : 20;
@@ -187,6 +189,53 @@ router.get("/", async (req, res) => {
       values.push(value);
     }
 
+    if (minYearBuilt !== undefined) {
+      const value = Number(minYearBuilt);
+    
+      if (
+        !Number.isInteger(value) ||
+        value < 1800 ||
+        value > 2100
+      ) {
+        return res.status(400).json({
+          error:
+            "Invalid minYearBuilt. minYearBuilt must be an integer between 1800 and 2100.",
+        });
+      }
+    
+      conditions.push("YearBuilt >= ?");
+      values.push(value);
+    }
+    
+    if (maxYearBuilt !== undefined) {
+      const value = Number(maxYearBuilt);
+    
+      if (
+        !Number.isInteger(value) ||
+        value < 1800 ||
+        value > 2100
+      ) {
+        return res.status(400).json({
+          error:
+            "Invalid maxYearBuilt. maxYearBuilt must be an integer between 1800 and 2100.",
+        });
+      }
+    
+      conditions.push("YearBuilt <= ?");
+      values.push(value);
+    }
+    
+    if (
+      minYearBuilt !== undefined &&
+      maxYearBuilt !== undefined &&
+      Number(minYearBuilt) > Number(maxYearBuilt)
+    ) {
+      return res.status(400).json({
+        error:
+          "Invalid year range. minYearBuilt cannot be greater than maxYearBuilt.",
+      });
+    }
+
     const whereClause =
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
@@ -211,6 +260,7 @@ router.get("/", async (req, res) => {
         L_Keyword2,
         LM_Dec_3,
         LM_Int2_3,
+        YearBuilt,
         L_Photos
       FROM rets_property
       ${whereClause}

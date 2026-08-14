@@ -90,3 +90,44 @@ export async function fetchOpenHouses(id) {
 
   return response.json();
 }
+
+export async function searchPropertiesNatural(
+  query
+) {
+  const response = await fetch(
+    "/api/search/natural",
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        query,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    let message =
+      "Failed to perform natural language search";
+
+    try {
+      const errorData =
+        await response.json();
+
+      message =
+        errorData.error ||
+        errorData.message ||
+        message;
+    } catch {
+      // Keep default message.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json();
+}

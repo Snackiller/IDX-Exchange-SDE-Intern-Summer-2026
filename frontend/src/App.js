@@ -6,6 +6,7 @@ import {
 
 import ListingsPage from "./pages/ListingsPage";
 import PropertyDetailPage from "./pages/PropertyDetailPage";
+import NaturalSearchPage from "./pages/NaturalSearchPage";
 
 function App() {
   return (
@@ -19,6 +20,11 @@ function App() {
         <Route
           path="/property/:id"
           element={<PropertyDetailPage />}
+        />
+
+        <Route
+          path="/search/natural"
+          element={<NaturalSearchPage />}
         />
       </Routes>
     </BrowserRouter>
