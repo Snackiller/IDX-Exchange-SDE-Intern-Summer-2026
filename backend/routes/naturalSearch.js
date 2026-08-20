@@ -1,9 +1,7 @@
 const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
-
 const nodeFetch = require("node-fetch");
 const https = require("https");
-
 
 const validatePropertyFilters =
   require("../utils/validatePropertyFilters");
@@ -16,6 +14,12 @@ const router = express.Router();
 const httpsAgent = new https.Agent({
   family: 4,
 });
+
+// Polyfill the Web Fetch API globals that the Anthropic SDK expects.
+globalThis.fetch = nodeFetch;
+globalThis.Headers = nodeFetch.Headers;
+globalThis.Request = nodeFetch.Request;
+globalThis.Response = nodeFetch.Response;
 
 const fetchIPv4 = (url, options = {}) => {
   return nodeFetch(url, {
@@ -108,9 +112,6 @@ router.post("/", async (req, res) => {
 
     const text =
       message.content?.[0]?.text;
-
-    console.log("Claude raw response:");
-    console.log(text);
 
     if (!text) {
       return res.status(503).json({

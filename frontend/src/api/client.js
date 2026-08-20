@@ -37,8 +37,6 @@ export async function fetchProperties(params = {}) {
   return response.json();
 }
 
-
-// Fetch one property by listing ID.
 export async function fetchPropertyDetail(id) {
   const response = await fetch(
     `/api/properties/${id}`
@@ -64,8 +62,6 @@ export async function fetchPropertyDetail(id) {
   return response.json();
 }
 
-
-// Fetch open houses for one property.
 export async function fetchOpenHouses(id) {
   const response = await fetch(
     `/api/properties/${id}/openhouses`

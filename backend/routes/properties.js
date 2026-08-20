@@ -3,7 +3,6 @@ const pool = require("../db");
 
 const router = express.Router();
 
-// Week4
 router.get("/:id/openhouses", async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,7 +52,6 @@ router.get("/:id/openhouses", async (req, res) => {
 });
 
 
-// Week4
 router.get("/:id", async (req, res) => {
   try {
 
@@ -103,7 +101,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Week3
 router.get("/", async (req, res) => {
   try {
     const {
