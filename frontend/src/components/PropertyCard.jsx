@@ -1,29 +1,10 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import PropertyImageCarousel from "./PropertyImageCarousel";
-
+import { formatPrice } from "../utils/formatters";
 import "./PropertyCard.css";
 
-
-function formatPrice(price) {
-  const numericPrice = Number(price);
-
-  if (
-    !Number.isFinite(numericPrice) ||
-    numericPrice <= 0
-  ) {
-    return "Price unavailable";
-  }
-
-  return numericPrice.toLocaleString(
-    "en-US",
-    {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }
-  );
-}
 
 
 function PropertyCard({ property }) {
@@ -99,5 +80,47 @@ function PropertyCard({ property }) {
     </article>
   );
 }
+
+PropertyCard.propTypes = {
+  property: PropTypes.shape({
+    L_ListingID: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]).isRequired,
+
+    L_Photos: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(
+        PropTypes.string
+      ),
+    ]),
+
+    L_SystemPrice: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+
+    L_Address: PropTypes.string,
+
+    L_City: PropTypes.string,
+
+    L_State: PropTypes.string,
+
+    L_Keyword2: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+
+    LM_Dec_3: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+
+    LM_Int2_3: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+  }).isRequired,
+};
 
 export default PropertyCard;
