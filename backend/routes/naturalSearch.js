@@ -1,7 +1,5 @@
 const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
-const nodeFetch = require("node-fetch");
-const https = require("https");
 
 const validatePropertyFilters =
   require("../utils/validatePropertyFilters");
@@ -11,26 +9,8 @@ const searchProperties =
 
 const router = express.Router();
 
-const httpsAgent = new https.Agent({
-  family: 4,
-});
-
-// Polyfill the Web Fetch API globals that the Anthropic SDK expects.
-globalThis.fetch = nodeFetch;
-globalThis.Headers = nodeFetch.Headers;
-globalThis.Request = nodeFetch.Request;
-globalThis.Response = nodeFetch.Response;
-
-const fetchIPv4 = (url, options = {}) => {
-  return nodeFetch(url, {
-    ...options,
-    agent: httpsAgent,
-  });
-};
-
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
-  fetch: fetchIPv4,
 });
 
 const systemPrompt = `
@@ -123,6 +103,8 @@ router.post("/", async (req, res) => {
     let extracted;
 
     try {
+    // The prompt requests raw JSON, but defensively remove Markdown fences
+    // so an otherwise valid model response does not unnecessarily fail parsing.
     let cleanedText = text.trim();
 
     cleanedText = cleanedText
@@ -149,6 +131,8 @@ router.post("/", async (req, res) => {
     });
     }
 
+    // Treat model output as untrusted input: only validated, supported
+    // filters are allowed to reach the database search layer.
     const filters =
       validatePropertyFilters(extracted);
 

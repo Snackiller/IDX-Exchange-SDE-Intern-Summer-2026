@@ -13,7 +13,20 @@ router.get("/:id/openhouses", async (req, res) => {
         error: "Invalid listing ID",
       });
     }
-
+    const [propertyRows] = await pool.query(
+      `
+      SELECT L_ListingID
+      FROM rets_property
+      WHERE L_ListingID = ?
+      `,
+      [id]
+    );
+    
+    if (propertyRows.length === 0) {
+      return res.status(404).json({
+        error: "Property not found",
+      });
+    }
 
     const [rows] = await pool.query(
       `
@@ -114,6 +127,9 @@ router.get("/", async (req, res) => {
       maxYearBuilt,
     } = req.query;
 
+    // Use bounded limit/offset pagination to keep individual database
+    // requests predictable and prevent clients from requesting an
+    // unreasonably large result set in one response.
     let limit = req.query.limit ? Number(req.query.limit) : 20;
     let offset = req.query.offset ? Number(req.query.offset) : 0;
 
@@ -129,6 +145,9 @@ router.get("/", async (req, res) => {
       });
     }
 
+    // Build SQL conditions separately from parameter values so every
+    // user-supplied filter remains parameterized instead of being
+    // interpolated directly into the query.
     const conditions = [];
     const values = [];
 
@@ -233,6 +252,8 @@ router.get("/", async (req, res) => {
       });
     }
 
+    // Generate one WHERE clause from the validated filters so the count
+    // query and data query always operate on the exact same result set.
     const whereClause =
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
@@ -245,6 +266,8 @@ router.get("/", async (req, res) => {
       values
     );
 
+    // LIMIT and OFFSET are parameterized as well, keeping pagination
+    // values separate from the SQL string just like the filter values.
     const [rows] = await pool.query(
       `
       SELECT

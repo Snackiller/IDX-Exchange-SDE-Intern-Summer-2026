@@ -41,6 +41,8 @@ function Pagination({
   itemsPerPage,
   onPageChange,
 }) {
+  // Round up because a partially filled final page still needs its own
+  // page number (for example, 21 results at 20 per page requires 2 pages).
   const totalPages = Math.ceil(
     totalItems / itemsPerPage
   );
