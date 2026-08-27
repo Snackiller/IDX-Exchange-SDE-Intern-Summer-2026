@@ -16,7 +16,6 @@ into structured property filters. The extracted filters are validated before the
 
 ![Natural Language Property Search](./docs/screenshots/property-search.jpg)
 
-> Before final submission, add a screenshot of the running application at `docs/screenshots/property-search.png`.
 
 ---
 
