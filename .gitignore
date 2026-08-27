@@ -21,6 +21,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Testing
+coverage/
+
 # Build output
 dist/
 build/
