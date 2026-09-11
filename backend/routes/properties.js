@@ -152,8 +152,8 @@ router.get("/", async (req, res) => {
     const values = [];
 
     if (city) {
-      conditions.push("LOWER(TRIM(L_City)) = LOWER(TRIM(?))");
-      values.push(city);
+      conditions.push("L_City = ?");
+      values.push(city.trim());
     }
 
     if (zipcode) {

@@ -104,7 +104,7 @@ describe("GET /api/properties", () => {
     expect(
       pool.query.mock.calls[0][0]
     ).toContain(
-      "LOWER(TRIM(L_City)) = LOWER(TRIM(?))"
+      "L_City = ?"
     );
 
     expect(
